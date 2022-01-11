@@ -62,6 +62,6 @@ def download_zip():
     try:
         file_extension = request.args.get('file_extension')
         compression_ratio = request.args.get('compression_ratio')
-        return send_file(zipfile.ZipFile(shutil.make_archive(os.environ['FILES_DIRECTORY'] + file_extension, 'zip', os.environ['FILES_DIRECTORY'] + file_extension ), 'w', zipfile.ZIP_DEFLATED, compression_ratio).filename), 200
+        return send_file(zipfile.ZipFile(shutil.make_archive(os.environ['FILES_DIRECTORY'] + file_extension, 'zip', os.environ['FILES_DIRECTORY'] + file_extension ), 'r', zipfile.ZIP_DEFLATED, compression_ratio).filename), 200
     except FileNotFoundError:
         return {"message": "Arquivo não existente"}, 404
