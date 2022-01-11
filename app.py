@@ -2,6 +2,8 @@ import os
 from flask import Flask, request, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 import shutil
+import zipfile
+from zipfile import ZipFile
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = eval(os.environ['MAX_CONTENT_LENGTH'])
@@ -57,6 +59,9 @@ def download(filename):
 
 @app.get("/download-zip")
 def download_zip():
-    query_param = request.args.get('tipo')
-    print(query_param)
-    return send_file(shutil.make_archive(os.environ['FILES_DIRECTORY'] + query_param, 'zip', os.environ['FILES_DIRECTORY'] + query_param )), 200
+    try:
+        file_extension = request.args.get('file_extension')
+        compression_ratio = request.args.get('compression_ratio')
+        return send_file(zipfile.ZipFile(shutil.make_archive(os.environ['FILES_DIRECTORY'] + file_extension, 'zip', os.environ['FILES_DIRECTORY'] + file_extension ), 'w', zipfile.ZIP_DEFLATED, compression_ratio).filename), 200
+    except FileNotFoundError:
+        return {"message": "Arquivo não existente"}, 404
